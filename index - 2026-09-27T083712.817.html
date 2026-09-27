@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scorpions Stats 2026/27</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e09; --panel:#161a11; --line:#2a3120; --ink:#eef3e2; --dim:#94a083;
+  --venom:#c6ff00; --venom-ink:#0c0e09; --claret:#b8325e; --sky:#3cc3f0;
+  --display:'Anton',Impact,'Arial Narrow',sans-serif;
+  --body:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f3f5ee; --panel:#ffffff; --line:#d6dccb; --ink:#141810; --dim:#5d6751;
+    --venom:#5f8a00; --venom-ink:#ffffff; --claret:#8e1f45; --sky:#0e7fae;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c0e09; --panel:#161a11; --line:#2a3120; --ink:#eef3e2; --dim:#94a083;
+  --venom:#c6ff00; --venom-ink:#0c0e09; --claret:#b8325e; --sky:#3cc3f0;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 64px}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--venom);outline-offset:2px}
+
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 0 18px;border-bottom:3px solid var(--venom)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,11vw,76px);line-height:.9;margin:0;letter-spacing:.01em}
+h1 small{display:block;font-family:var(--body);font-size:15px;font-weight:600;color:var(--dim);letter-spacing:0;margin-top:8px}
+.season select{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.status{font-size:13px;color:var(--dim);margin:10px 0 0}
+.status.warn{color:var(--claret)}
+
+.record{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:20px 0}
+.record div{background:var(--panel);padding:10px 4px;text-align:center}
+.record b{display:block;font-family:var(--display);font-weight:400;font-size:28px;line-height:1.1}
+.record span{font-size:12px;color:var(--dim)}
+.record .w b{color:var(--venom)} .record .l b{color:var(--claret)}
+
+nav.tabs{display:flex;gap:6px;margin:0 0 16px;overflow-x:auto}
+nav.tabs button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap;font-weight:600}
+nav.tabs button[aria-selected="true"]{background:var(--venom);color:var(--venom-ink);border-color:var(--venom)}
+
+.leaders{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.leader{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.leader .k{font-size:13px;color:var(--dim);font-weight:600}
+.leader .n{font-family:var(--display);font-size:clamp(20px,5vw,30px);line-height:1.05;margin:4px 0;word-break:break-word}
+.leader .v{font-family:var(--display);color:var(--venom);font-size:40px;line-height:1}
+.leader.empty .n{color:var(--dim)}
+
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:480px;background:var(--panel)}
+th,td{padding:10px 10px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+th{font-size:13px;color:var(--dim);font-weight:600;cursor:pointer;user-select:none;white-space:nowrap}
+th[aria-sort] {color:var(--venom)}
+tbody tr:last-child td{border-bottom:0}
+td.pos{color:var(--dim);font-size:13px}
+td.big{font-weight:700}
+td .rank{display:inline-block;width:22px;color:var(--dim);font-size:13px}
+
+.match{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.match .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.match .opp{font-weight:700;font-size:17px}
+.match .meta{font-size:13px;color:var(--dim)}
+.score{font-family:var(--display);font-size:30px;line-height:1;white-space:nowrap}
+.score.w{color:var(--venom)} .score.l{color:var(--claret)}
+.match ul{margin:8px 0 0;padding:0;list-style:none;font-size:14px}
+.match li{padding:2px 0}
+.match li .a{color:var(--dim)}
+.match .cs{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--sky)}
+.match .acts{display:flex;gap:8px;margin-top:10px}
+
+.btn{background:var(--venom);color:var(--venom-ink);border:0;border-radius:6px;padding:10px 16px;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:transparent;color:var(--claret);border:1px solid var(--claret)}
+.btn.sm{padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+form .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:13px;color:var(--dim);font-weight:600}
+label input,label select{display:block;width:100%;margin-top:4px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px;color:var(--ink)}
+.scoreline{display:flex;align-items:flex-end;gap:10px}
+.scoreline label{flex:1}
+.scoreline .dash{font-family:var(--display);font-size:28px;padding-bottom:6px}
+fieldset{border:1px solid var(--line);border-radius:8px;margin:16px 0;padding:12px}
+legend{padding:0 6px;font-weight:700}
+.goalrow{display:grid;grid-template-columns:28px 1fr 1fr;gap:8px;align-items:end;margin-bottom:8px}
+.goalrow .num{font-family:var(--display);font-size:22px;color:var(--venom);padding-bottom:8px}
+.hint{font-size:13px;color:var(--dim);margin:4px 0 0}
+.formacts{display:flex;gap:10px;flex-wrap:wrap}
+.err{color:var(--claret);font-size:14px;font-weight:600;min-height:1.2em}
+
+.squad li{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.squad ul{list-style:none;margin:0 0 16px;padding:0}
+.addp{display:grid;grid-template-columns:2fr 1fr auto;gap:8px;align-items:end}
+
+.empty-state{padding:28px 16px;text-align:center;color:var(--dim);border:1px dashed var(--line);border-radius:8px}
+.foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+[hidden]{display:none!important}
+body:not(.coach) .coach-only{display:none!important}
+
+@media (max-width:560px){
+  .record b{font-size:22px}
+  .leaders{grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .leader{padding:10px 8px}
+  .leader .v{font-size:30px}
+  form .grid{grid-template-columns:1fr}
+  .goalrow{grid-template-columns:22px 1fr 1fr}
+  .addp{grid-template-columns:1fr 1fr}
+  .addp .btn{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Scorpions stats<small>Farnham Town · goals, assists and clean sheets</small></h1>
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <label class="season">Season
+        <select id="seasonSel" aria-label="Season"></select>
+      </label>
+      <button class="btn ghost sm" id="coachBtn" type="button" style="margin-bottom:1px">Coach login</button>
+    </div>
+  </header>
+  <p class="status" id="status">Loading…</p>
+
+  <section class="record" id="record" aria-label="Team record"></section>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="table">Player table</button>
+    <button role="tab" aria-selected="false" data-tab="matches">Results</button>
+    <button role="tab" aria-selected="false" data-tab="add" class="coach-only">Add result</button>
+    <button role="tab" aria-selected="false" data-tab="squad">Squad</button>
+  </nav>
+
+  <!-- PLAYER TABLE -->
+  <section data-panel="table">
+    <div class="leaders" id="leaders"></div>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th data-sort="name">Player</th>
+          <th data-sort="pos">Pos</th>
+          <th data-sort="goals">Goals</th>
+          <th data-sort="assists">Assists</th>
+          <th data-sort="ga">G+A</th>
+          <th data-sort="cs">Clean sheets</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="foot"><button class="btn ghost sm" id="exportBtn">Download CSV</button></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section data-panel="matches" hidden>
+    <div id="matchList"></div>
+  </section>
+
+  <!-- ADD / EDIT -->
+  <section data-panel="add" hidden>
+    <form id="matchForm" novalidate>
+      <div class="grid">
+        <label>Date<input type="date" id="fDate" required></label>
+        <label>Opponent<input type="text" id="fOpp" placeholder="e.g. Ash United" required></label>
+        <label>Home or away
+          <select id="fVenue"><option value="H">Home</option><option value="A">Away</option></select>
+        </label>
+        <label>Competition
+          <select id="fComp"><option>League</option><option>Cup</option><option>Friendly</option><option>Tournament</option></select>
+        </label>
+      </div>
+      <fieldset>
+        <legend>Score</legend>
+        <div class="scoreline">
+          <label>Scorpions<input type="number" id="fGF" min="0" max="40" value="0" inputmode="numeric"></label>
+          <span class="dash">–</span>
+          <label>Opponent<input type="number" id="fGA" min="0" max="40" value="0" inputmode="numeric"></label>
+        </div>
+        <label style="margin-top:12px">Goalkeeper
+          <select id="fGK"></select>
+        </label>
+        <p class="hint" id="csHint"></p>
+      </fieldset>
+      <fieldset id="goalsBox">
+        <legend>Our goals</legend>
+        <div id="goalRows"></div>
+        <p class="hint" id="goalsHint">Set the Scorpions score and a row appears for each goal.</p>
+      </fieldset>
+      <p class="err" id="formErr" role="alert"></p>
+      <div class="formacts">
+        <button type="submit" class="btn" id="saveBtn">Save result</button>
+        <button type="button" class="btn ghost" id="cancelEdit" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- SQUAD -->
+  <section data-panel="squad" hidden class="squad">
+    <ul id="squadList"></ul>
+    <div class="addp coach-only">
+      <label>Player name<input id="pName" type="text"></label>
+      <label>Position
+        <select id="pPos"><option>GK</option><option>DEF</option><option>MID</option><option>FWD</option></select>
+      </label>
+      <button class="btn" id="addPlayer" type="button">Add player</button>
+    </div>
+    <p class="err" id="squadErr" role="alert"></p>
+  </section>
+</div>
+
+<script>
+(() => {
+  const SB_URL = 'https://kdorepgtvgwumdggjzqm.supabase.co';
+  const SB_KEY = 'sb_publishable_8A4Lgek4MyLLl4QUsstqGw_vFFCgkwN';
+  const CURRENT_SEASON = '2026/27';
+  const PIN_KEY = 'scorpions-coach-pin';
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const H = {apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json'};
+
+  const state = { players: [], matches: [], season: CURRENT_SEASON, sort: {key:'goals', dir:-1}, editingId: null, pin: null };
+  try { state.pin = localStorage.getItem(PIN_KEY); } catch(e){}
+
+  // ---------- API ----------
+  async function get(path){
+    const r = await fetch(`${SB_URL}/rest/v1/${path}`, {headers: H});
+    if (!r.ok) throw new Error('load');
+    return r.json();
+  }
+  async function rpc(fn, args){
+    const r = await fetch(`${SB_URL}/rest/v1/rpc/${fn}`, {method:'POST', headers: H, body: JSON.stringify(args)});
+    const body = await r.text();
+    if (!r.ok) { let m = 'Couldn\'t save. Check your connection and try again.'; try { const j = JSON.parse(body); if (j.message) m = j.message; } catch(e){} throw new Error(m); }
+    return body ? JSON.parse(body) : null;
+  }
+  async function load(){
+    try {
+      const [ps, ms] = await Promise.all([
+        get('scorpions_players?select=*&order=name'),
+        get('scorpions_matches?select=*&order=match_date.desc')
+      ]);
+      state.players = ps;
+      state.matches = ms.map(m => ({...m, date: m.match_date}));
+      if (!state.editingId) render(); else { renderRecord(); renderTable(); renderMatches(); }
+      setStatus(isCoach() ? 'Coach mode. Results save straight to the shared table.' : 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}));
+    } catch(e) { setStatus('Couldn\'t load the stats. Check your connection and refresh.', true); }
+  }
+  const isCoach = () => !!state.pin;
+  function wrongPin(msg){
+    if (/pin/i.test(msg)) { state.pin = null; try { localStorage.removeItem(PIN_KEY); } catch(e){} applyCoach(); }
+  }
+
+  function setStatus(msg, warn){ const s = $('#status'); s.textContent = msg; s.classList.toggle('warn', !!warn); }
+
+  // ---------- stats ----------
+  const activePlayers = () => state.players.filter(p => p.active !== false);
+  function seasonMatches(){ return state.matches.filter(m => (m.season || CURRENT_SEASON) === state.season); }
+  function playerName(id){ const p = state.players.find(x => x.id === id); return p ? p.name : 'Unknown player'; }
+
+  function computeStats(){
+    const s = {};
+    activePlayers().forEach(p => s[p.id] = {id:p.id, name:p.name, pos:p.pos||'', goals:0, assists:0, cs:0});
+    const ensure = id => s[id] || (s[id] = {id, name: playerName(id), pos: (state.players.find(p=>p.id===id)||{}).pos||'', goals:0, assists:0, cs:0});
+    seasonMatches().forEach(m => {
+      (m.goals || []).forEach(g => {
+        if (g.scorer && g.scorer !== 'og') ensure(g.scorer).goals++;
+        if (g.assist) ensure(g.assist).assists++;
+      });
+      if (Number(m.ga) === 0 && m.keeper) ensure(m.keeper).cs++;
+    });
+    return Object.values(s).map(r => ({...r, ga: r.goals + r.assists}));
+  }
+  function teamRecord(){
+    const r = {p:0,w:0,d:0,l:0,gf:0,ga:0};
+    seasonMatches().forEach(m => { const f=+m.gf||0, a=+m.ga||0; r.p++; r.gf+=f; r.ga+=a; f>a?r.w++:f<a?r.l++:r.d++; });
+    return r;
+  }
+
+  // ---------- render ----------
+  function render(){ renderSeasons(); renderRecord(); renderTable(); renderMatches(); renderSquad(); renderKeeperOptions(); if (!state.editingId) renderGoalRows(); }
+
+  function renderSeasons(){
+    const list = [...new Set([CURRENT_SEASON, ...state.matches.map(m => m.season || CURRENT_SEASON)])].sort().reverse();
+    $('#seasonSel').innerHTML = list.map(s => `<option ${s===state.season?'selected':''}>${esc(s)}</option>`).join('');
+  }
+  function renderRecord(){
+    const r = teamRecord();
+    $('#record').innerHTML = [['p','Played',r.p],['w','Won',r.w],['d','Drawn',r.d],['l','Lost',r.l],['gf','For',r.gf],['ga','Against',r.ga]]
+      .map(([c,l,v]) => `<div class="${c}"><b>${v}</b><span>${l}</span></div>`).join('');
+  }
+  function leaderCard(label, rows, key){
+    const top = rows.filter(r => r[key] > 0).sort((a,b) => b[key]-a[key]);
+    if (!top.length) return `<div class="leader empty"><div class="k">${label}</div><div class="n">No one yet</div><div class="v">0</div></div>`;
+    const best = top[0][key], names = top.filter(r => r[key] === best).map(r => r.name.split(' ')[0]);
+    return `<div class="leader"><div class="k">${label}</div><div class="n">${esc(names.join(' & '))}</div><div class="v">${best}</div></div>`;
+  }
+  function renderTable(){
+    const rows = computeStats();
+    $('#leaders').innerHTML = leaderCard('Top scorer', rows, 'goals') + leaderCard('Most assists', rows, 'assists') + leaderCard('Clean sheets', rows, 'cs');
+    const {key, dir} = state.sort, posOrder = {GK:0, DEF:1, MID:2, FWD:3};
+    rows.sort((a,b) => {
+      let x = a[key], y = b[key];
+      if (key === 'pos') { x = posOrder[x] ?? 9; y = posOrder[y] ?? 9; }
+      if (typeof x === 'string') return dir * x.localeCompare(y);
+      return dir * (x - y) || b.goals - a.goals || b.assists - a.assists || a.name.localeCompare(b.name);
+    });
+    $('#tbody').innerHTML = rows.length ? rows.map((r,i) => `<tr><td><span class="rank">${i+1}</span>${esc(r.name)}</td><td class="pos">${esc(r.pos)}</td><td class="big">${r.goals}</td><td>${r.assists}</td><td>${r.ga}</td><td>${r.cs}</td></tr>`).join('')
+      : `<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:24px">No players yet.</td></tr>`;
+    document.querySelectorAll('th[data-sort]').forEach(th => th.dataset.sort === key ? th.setAttribute('aria-sort', dir<0?'descending':'ascending') : th.removeAttribute('aria-sort'));
+  }
+  function renderMatches(){
+    const ms = seasonMatches().slice().sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    if (!ms.length) { $('#matchList').innerHTML = `<div class="empty-state">No results for ${esc(state.season)} yet.</div>`; return; }
+    $('#matchList').innerHTML = ms.map(m => {
+      const f=+m.gf||0, a=+m.ga||0, res=f>a?'w':f<a?'l':'d';
+      const d = m.date ? new Date(m.date+'T12:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}) : '';
+      const goals = (m.goals||[]).map(g => `<li>⚽ ${g.scorer==='og'?'Own goal':esc(playerName(g.scorer))}${g.assist?` <span class="a">(assist ${esc(playerName(g.assist))})</span>`:''}</li>`).join('');
+      return `<article class="match"><div class="row"><div><div class="opp">${m.venue==='A'?'at ':'v '}${esc(m.opponent)}</div><div class="meta">${d} · ${esc(m.comp||'League')}</div></div><div class="score ${res}">${f}–${a}</div></div>
+        ${goals?`<ul>${goals}</ul>`:''}${a===0&&m.keeper?`<span class="cs">Clean sheet: ${esc(playerName(m.keeper))}</span>`:''}
+        <div class="acts coach-only"><button class="btn ghost sm" data-edit="${m.id}">Edit</button><button class="btn danger sm" data-del="${m.id}">Delete</button></div></article>`;
+    }).join('');
+  }
+  function playerOptions(sel, extra){
+    return (extra||'') + activePlayers().slice().sort((a,b)=>a.name.localeCompare(b.name)).map(p => `<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)}</option>`).join('')
+      + (sel && sel!=='og' && !activePlayers().some(p=>p.id===sel) ? `<option value="${sel}" selected>${esc(playerName(sel))}</option>` : '');
+  }
+  function renderKeeperOptions(){
+    const cur = $('#fGK').value, gk = activePlayers().find(p => p.pos === 'GK');
+    $('#fGK').innerHTML = playerOptions(cur || gk?.id || '', '<option value="">Select keeper</option>');
+    updateCsHint();
+  }
+  function updateCsHint(){
+    const ga = +$('#fGA').value || 0, k = $('#fGK').value;
+    $('#csHint').textContent = ga === 0 ? (k ? `Clean sheet goes to ${playerName(k)}.` : 'Pick the keeper to credit the clean sheet.') : '';
+  }
+  function renderGoalRows(existing){
+    const n = Math.max(0, Math.min(40, +$('#fGF').value || 0)), box = $('#goalRows');
+    const prev = existing || [...box.querySelectorAll('.goalrow')].map(r => ({scorer:r.querySelector('.sc').value, assist:r.querySelector('.as').value}));
+    let html = '';
+    for (let i=0;i<n;i++){
+      const g = prev[i] || {};
+      html += `<div class="goalrow"><span class="num">${i+1}</span>
+        <label>Scorer<select class="sc">${playerOptions(g.scorer,'<option value="">Select</option><option value="og" '+(g.scorer==='og'?'selected':'')+'>Own goal (theirs)</option>')}</select></label>
+        <label>Assist<select class="as">${playerOptions(g.assist,'<option value="">No assist</option>')}</select></label></div>`;
+    }
+    box.innerHTML = html; $('#goalsHint').hidden = n > 0;
+  }
+  function renderSquad(){
+    const order = {GK:0,DEF:1,MID:2,FWD:3};
+    const ps = activePlayers().sort((a,b) => (order[a.pos]??9)-(order[b.pos]??9) || a.name.localeCompare(b.name));
+    $('#squadList').innerHTML = ps.length ? ps.map(p => `<li><span>${esc(p.name)} <span style="color:var(--dim);font-size:13px">${esc(p.pos||'')}</span></span>
+      <span class="coach-only" style="display:flex;gap:6px"><select data-pos="${p.id}" aria-label="Position for ${esc(p.name)}" style="background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px">${['GK','DEF','MID','FWD'].map(o=>`<option ${o===p.pos?'selected':''}>${o}</option>`).join('')}</select><button class="btn danger sm" data-rmp="${p.id}">Remove</button></span></li>`).join('')
+      : `<li style="color:var(--dim)">No players yet.</li>`;
+  }
+
+  // ---------- coach mode ----------
+  function applyCoach(){
+    document.body.classList.toggle('coach', isCoach());
+    $('#coachBtn').textContent = isCoach() ? 'Log out' : 'Coach login';
+    if (!isCoach() && !$('[data-panel="add"]').hidden) showTab('table');
+  }
+  $('#coachBtn').addEventListener('click', async () => {
+    if (isCoach()) { state.pin = null; try { localStorage.removeItem(PIN_KEY); } catch(e){} applyCoach(); load(); return; }
+    const pin = prompt('Coach PIN');
+    if (!pin) return;
+    try {
+      const ok = await rpc('scorpions_check_pin', {p_pin: pin.trim()});
+      if (!ok) { setStatus('That PIN isn\'t right.', true); return; }
+      state.pin = pin.trim(); try { localStorage.setItem(PIN_KEY, state.pin); } catch(e){}
+      applyCoach(); setStatus('Coach mode. Results save straight to the shared table.');
+    } catch(e) { setStatus(e.message, true); }
+  });
+
+  // ---------- events ----------
+  document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  function showTab(t){
+    document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab===t));
+    document.querySelectorAll('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== t);
+  }
+  document.querySelectorAll('th[data-sort]').forEach(th => th.addEventListener('click', () => {
+    const k = th.dataset.sort;
+    state.sort = state.sort.key === k ? {key:k, dir:-state.sort.dir} : {key:k, dir:(k==='name'||k==='pos')?1:-1};
+    renderTable();
+  }));
+  $('#seasonSel').addEventListener('change', e => { state.season = e.target.value; render(); });
+  $('#fGF').addEventListener('input', () => renderGoalRows());
+  $('#fGA').addEventListener('input', updateCsHint);
+  $('#fGK').addEventListener('change', updateCsHint);
+
+  function resetForm(){
+    state.editingId = null; $('#matchForm').reset();
+    $('#fDate').value = new Date().toISOString().slice(0,10);
+    $('#saveBtn').textContent = 'Save result'; $('#cancelEdit').hidden = true; $('#formErr').textContent = '';
+    renderKeeperOptions(); renderGoalRows([]);
+  }
+  $('#cancelEdit').addEventListener('click', () => { resetForm(); showTab('matches'); });
+
+  $('#matchForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('#formErr'), opponent = $('#fOpp').value.trim(), date = $('#fDate').value;
+    const gf = +$('#fGF').value || 0, ga = +$('#fGA').value || 0;
+    if (!date || !opponent) { err.textContent = 'Add the date and opponent.'; return; }
+    const goals = [...document.querySelectorAll('#goalRows .goalrow')].map(r => ({scorer:r.querySelector('.sc').value, assist:r.querySelector('.as').value || null}));
+    if (goals.some(g => !g.scorer)) { err.textContent = 'Pick a scorer for every goal (or Own goal).'; return; }
+    if (goals.some(g => g.assist && g.assist === g.scorer)) { err.textContent = 'A player can\'t assist their own goal.'; return; }
+    if (ga === 0 && !$('#fGK').value) { err.textContent = 'Pick the goalkeeper so the clean sheet is credited.'; return; }
+    const existing = state.editingId ? state.matches.find(m => m.id === state.editingId) : null;
+    const m = { id: state.editingId || '', season: existing?.season || state.season || CURRENT_SEASON, date, opponent,
+      venue: $('#fVenue').value, comp: $('#fComp').value, gf, ga, keeper: $('#fGK').value || null, goals };
+    $('#saveBtn').disabled = true; err.textContent = '';
+    try { await rpc('scorpions_save_match', {p_pin: state.pin, m}); resetForm(); showTab('matches'); await load(); }
+    catch(x){ err.textContent = x.message; wrongPin(x.message); }
+    finally { $('#saveBtn').disabled = false; }
+  });
+
+  $('#matchList').addEventListener('click', async e => {
+    const ed = e.target.closest('[data-edit]'), dl = e.target.closest('[data-del]');
+    if (ed) {
+      const m = state.matches.find(x => x.id === ed.dataset.edit); if (!m) return;
+      state.editingId = m.id;
+      $('#fDate').value = m.date || ''; $('#fOpp').value = m.opponent || '';
+      $('#fVenue').value = m.venue || 'H'; $('#fComp').value = m.comp || 'League';
+      $('#fGF').value = m.gf ?? 0; $('#fGA').value = m.ga ?? 0;
+      renderKeeperOptions(); $('#fGK').innerHTML = playerOptions(m.keeper || '', '<option value="">Select keeper</option>'); updateCsHint();
+      renderGoalRows(m.goals || []);
+      $('#saveBtn').textContent = 'Save changes'; $('#cancelEdit').hidden = false;
+      showTab('add'); window.scrollTo({top:0});
+    }
+    if (dl) {
+      const m = state.matches.find(x => x.id === dl.dataset.del);
+      if (m && confirm(`Delete the result v ${m.opponent}?`)) {
+        try { await rpc('scorpions_delete_match', {p_pin: state.pin, p_id: m.id}); await load(); }
+        catch(x){ setStatus(x.message, true); wrongPin(x.message); }
+      }
+    }
+  });
+
+  const slug = s => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  $('#addPlayer').addEventListener('click', async () => {
+    const name = $('#pName').value.trim(), e = $('#squadErr');
+    if (!name) { e.textContent = 'Type a name first.'; return; }
+    if (activePlayers().some(p => p.name.toLowerCase() === name.toLowerCase())) { e.textContent = `${name} is already in the squad.`; return; }
+    const prior = state.players.find(p => p.name.toLowerCase() === name.toLowerCase());
+    let id = prior ? prior.id : slug(name); if (!prior) { let n=2, base=id; while (state.players.some(p=>p.id===id)) id = base+'-'+(n++); }
+    e.textContent = '';
+    try { await rpc('scorpions_save_player', {p_pin: state.pin, p: {id, name, pos: $('#pPos').value, active: true}}); $('#pName').value=''; await load(); }
+    catch(x){ e.textContent = x.message; wrongPin(x.message); }
+  });
+  $('#squadList').addEventListener('change', async e => {
+    const s = e.target.closest('[data-pos]'); if (!s) return;
+    const p = state.players.find(x => x.id === s.dataset.pos);
+    if (p) { try { await rpc('scorpions_save_player', {p_pin: state.pin, p: {...p, pos: s.value}}); await load(); } catch(x){ setStatus(x.message, true); wrongPin(x.message); } }
+  });
+  $('#squadList').addEventListener('click', async e => {
+    const b = e.target.closest('[data-rmp]'); if (!b) return;
+    const p = state.players.find(x => x.id === b.dataset.rmp);
+    if (p && confirm(`Remove ${p.name} from the squad? Their goals on past results are kept.`)) {
+      try { await rpc('scorpions_save_player', {p_pin: state.pin, p: {...p, active: false}}); await load(); } catch(x){ setStatus(x.message, true); wrongPin(x.message); }
+    }
+  });
+
+  $('#exportBtn').addEventListener('click', () => {
+    const rows = computeStats().sort((a,b)=>b.goals-a.goals||b.assists-a.assists);
+    const csv = ['Player,Position,Goals,Assists,G+A,Clean sheets', ...rows.map(r => [`"${r.name.replace(/"/g,'""')}"`, r.pos, r.goals, r.assists, r.ga, r.cs].join(','))].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+    a.download = `scorpions-stats-${state.season.replace('/','-')}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  // ---------- boot ----------
+  $('#fDate').value = new Date().toISOString().slice(0,10);
+  applyCoach(); load();
+  setInterval(() => { if (!document.hidden && !state.editingId) load(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !state.editingId) load(); });
+})();
+</script>
+</body>
+</html>
